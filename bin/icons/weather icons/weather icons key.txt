@@ -1,0 +1,26 @@
+0: unknown weather
+1: cloudy
+2: shower
+3: snow shower
+4: sunny
+5: overcast
+6: light rain
+7: light snow
+8: moderate rain
+9: moderate snow
+10: heavy snow
+11: heavy rain
+12: sandstorm
+13: sleet
+14: fog
+15: haze
+16: thundershower
+17: snowstorm
+18: dust
+19: extraordinary rainstorm
+20: freezing rain
+21: thundershowers with hail
+22: heavy rainstom
+23: sand blowing
+24: strong sandstom
+25: rainstorm
