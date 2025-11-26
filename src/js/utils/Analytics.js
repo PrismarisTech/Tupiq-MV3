@@ -9,7 +9,8 @@ var ga = function () { }; // No-op for MV3 compatibility
 var analyticsID = 'UA-62023248-3';
 
 // Track under Tupiq Dev when running local
-if (chrome.runtime.getManifest().oauth2.client_id === '1022186080812-fpgbc34rns8pdtnkefat2jmac9fatdt2.apps.googleusercontent.com') {
+var manifest = chrome.runtime.getManifest();
+if (manifest.oauth2 && manifest.oauth2.client_id === '1022186080812-fpgbc34rns8pdtnkefat2jmac9fatdt2.apps.googleusercontent.com') {
 	analyticsID = 'UA-62023248-2'
 }
 
