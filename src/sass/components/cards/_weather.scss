@@ -7,6 +7,9 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	position: relative;
+	z-index: 100;
+	overflow: visible !important;
 
 	.weather__message {
 		color: $hint-disabled-font-color;
@@ -21,6 +24,7 @@
 		display: flex;
 		height: 100%;
 		width: 100%;
+		overflow: visible !important;
 
 		li {
 			display: flex;
@@ -56,15 +60,16 @@
 				align-self: center;
 				font-size: 12px;
 				color: $weather-secondary-font-color;
+
 				i {
 					display: inline-block;
 				}
 			}
 
 			.icon {
-				font-size: 28px;
-				line-height: normal;
-				color: $weather-icon-font-color;
+				width: 32px;
+				height: 32px;
+				object-fit: contain;
 			}
 
 			.summary {
@@ -76,6 +81,60 @@
 
 		li:last-child {
 			border-right: none;
+		}
+
+		// Modern tooltip styling
+		li[data-tooltip] {
+			position: relative;
+			cursor: help;
+
+			&::before,
+			&::after {
+				position: absolute;
+				opacity: 0;
+				pointer-events: none;
+				transition: opacity $regular-transition-duration ease, transform $regular-transition-duration ease;
+			}
+
+			// Tooltip bubble
+			&::before {
+				content: attr(data-tooltip);
+				bottom: 100%;
+				left: 50%;
+				transform: translateX(-50%) translateY(-4px);
+				padding: 6px 10px;
+				background: rgba(0, 0, 0, 0.85);
+				color: #fff;
+				font-size: 12px;
+				white-space: nowrap;
+				border-radius: 4px;
+				margin-bottom: 8px;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+				backdrop-filter: blur(4px);
+				z-index: 1000;
+			}
+
+			// Tooltip arrow
+			&::after {
+				content: '';
+				bottom: 100%;
+				left: 50%;
+				transform: translateX(-50%) translateY(4px);
+				border: 5px solid transparent;
+				border-top-color: rgba(0, 0, 0, 0.85);
+				margin-bottom: 3px;
+				z-index: 1000;
+			}
+
+			&:hover::before,
+			&:hover::after {
+				opacity: 1;
+				transform: translateX(-50%) translateY(0);
+			}
+
+			&:hover::after {
+				transform: translateX(-50%) translateY(-4px);
+			}
 		}
 	}
 }

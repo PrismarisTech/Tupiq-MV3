@@ -27,10 +27,10 @@ var padding = 10;
 
 function getStateFromStores() {
   return {
-    isDragging: TupiqStore.getDragging(),
     isMinimised: TupiqStore.getMinimised(),
     coordinates: TupiqStore.getCoordinates(),
-    dragOriginData: TupiqStore.getDragOriginData()
+    dragOriginData: TupiqStore.getDragOriginData(),
+    settings: TupiqStore.getSettings()
   }
 }
 
@@ -38,11 +38,11 @@ function getStateFromStores() {
  * TupiqContainer
  */
 var TupiqContainer = React.createClass({
-  getInitialState: function() {
+  getInitialState: function () {
     return getStateFromStores();
   },
 
-  componentDidMount: function() {
+  componentDidMount: function () {
     TupiqStore.addChangeListener(this._onChange);
 
     // Listen to window resize so we can reposition if necessary
@@ -52,8 +52,8 @@ var TupiqContainer = React.createClass({
     // http://www.backalleycoder.com/2013/03/18/cross-browser-event-based-element-resize-detection/
     var object = document.createElement('object');
     object.setAttribute('style', 'display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1;');
-    object.onload = function() {
-    	object.contentDocument.defaultView.addEventListener('resize', this.onDomNodeResize);
+    object.onload = function () {
+      object.contentDocument.defaultView.addEventListener('resize', this.onDomNodeResize);
     }.bind(this);
     object.type = 'text/html';
     object.data = 'about:blank';
@@ -62,33 +62,33 @@ var TupiqContainer = React.createClass({
     domNode.appendChild(object);
 
     // This will be fired from the context menu background script.
-    chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  		if ('minimisePanel' in request) {
-				TupiqActions.minimise();
+    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+      if ('minimisePanel' in request) {
+        TupiqActions.minimise();
 
-				Analytics.trackEvent('Button', 'Click', 'Minimise Panel');
-  		}
-  	}.bind(this));
+        Analytics.trackEvent('Button', 'Click', 'Minimise Panel');
+      }
+    }.bind(this));
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount: function () {
     TupiqStore.removeChangeListener(this._onChange);
 
     window.removeEventListener('resize', this.onWindowResize);
   },
 
-  _onChange: function() {
+  _onChange: function () {
     this.setState(getStateFromStores());
   },
 
-  onDomNodeResize: function(event) {
-  	this.onWindowResize();
+  onDomNodeResize: function (event) {
+    this.onWindowResize();
   },
 
-  onWindowResize: function(event) {
-  	// If we're minimised, or it's the initial x position of 50%
+  onWindowResize: function (event) {
+    // If we're minimised, or it's the initial x position of 50%
     if (this.state.isMinimised === true) {
-    	return;
+      return;
     }
 
     // We could call forceUpdate here, but nested Tupiq component is "pure"
@@ -100,12 +100,12 @@ var TupiqContainer = React.createClass({
     });
   },
 
-  onMouseDown: function(event) {
+  onMouseDown: function (event) {
     // Dodgy as.
     if (this.state.isMinimised === true || event.target.className === 'tupiq__header__logo-container' || event.target.className === 'tupiq__header__logo-container__tupiq-logo') {
-    	event.preventDefault();
+      event.preventDefault();
 
-    	return;
+      return;
     }
 
     if (event.button === 0) {
@@ -126,19 +126,19 @@ var TupiqContainer = React.createClass({
     }
   },
 
-  onMouseMove: function(event) {
-  	var element = this.getDOMNode(),
-  			elementWidth = element.offsetWidth,
-				elementHeight = element.offsetHeight,
-    		elementWidthCenter = elementWidth / 2,
-				elementHeightCenter = elementHeight / 2,
-				windowWidthCenter = window.innerWidth / 2,
-				windowHeightCenter = window.innerHeight / 2,
-				deltaX = event.pageX - this.state.dragOriginData.scrollOriginX,
-				deltaY = event.pageY - this.state.dragOriginData.scrollOriginY,
-				targetX = this.state.dragOriginData.elementOriginX + deltaX + elementWidthCenter,
-				targetY = this.state.dragOriginData.elementOriginY + deltaY + elementHeightCenter,
-				snapBuffer = 15;
+  onMouseMove: function (event) {
+    var element = this.getDOMNode(),
+      elementWidth = element.offsetWidth,
+      elementHeight = element.offsetHeight,
+      elementWidthCenter = elementWidth / 2,
+      elementHeightCenter = elementHeight / 2,
+      windowWidthCenter = window.innerWidth / 2,
+      windowHeightCenter = window.innerHeight / 2,
+      deltaX = event.pageX - this.state.dragOriginData.scrollOriginX,
+      deltaY = event.pageY - this.state.dragOriginData.scrollOriginY,
+      targetX = this.state.dragOriginData.elementOriginX + deltaX + elementWidthCenter,
+      targetY = this.state.dragOriginData.elementOriginY + deltaY + elementHeightCenter,
+      snapBuffer = 15;
 
     if (this.state.isDragging) {
       var targetXRel = (targetX - elementWidthCenter - padding) / (window.innerWidth - elementWidth - (padding * 2));
@@ -151,8 +151,8 @@ var TupiqContainer = React.createClass({
       targetYRel = Math.min(targetYRel, 1);
 
       if (TupiqTools.isNumberBetween(targetX, windowWidthCenter - snapBuffer, windowWidthCenter + snapBuffer) && TupiqTools.isNumberBetween(targetY, windowHeightCenter - snapBuffer, windowHeightCenter + snapBuffer)) {
-      	targetXRel = .5;
-      	targetYRel = .5;
+        targetXRel = .5;
+        targetYRel = .5;
       }
 
       TupiqActions.reposition({
@@ -162,28 +162,29 @@ var TupiqContainer = React.createClass({
     }
   },
 
-  onMouseUp: function(event) {
+  onMouseUp: function (event) {
     this.removeEvents();
 
     TupiqActions.stopDrag();
   },
 
-  addEvents: function() {
+  addEvents: function () {
     document.addEventListener('mousemove', this.onMouseMove);
     document.addEventListener('mouseup', this.onMouseUp);
   },
 
-  removeEvents: function() {
+  removeEvents: function () {
     document.removeEventListener('mousemove', this.onMouseMove);
     document.removeEventListener('mouseup', this.onMouseUp);
   },
 
-  render: function(){
+  render: function () {
     return (
       <Tupiq
-      	isMinimised={this.state.isMinimised}
+        isMinimised={this.state.isMinimised}
         isDragging={this.state.isDragging}
         coordinates={this.state.coordinates}
+        settings={this.state.settings}
         onMouseDown={this.onMouseDown} />
     )
   }

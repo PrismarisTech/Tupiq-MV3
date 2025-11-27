@@ -19,6 +19,8 @@ module.exports = keyMirror({
   TUPIQ_DRAG_STOP: null,
   TUPIQ_REPOSITION: null,
   TUPIQ_MINIMISE: null,
+  TUPIQ_TOGGLE_SETTING: null,
+  TUPIQ_SET_TEMP_UNIT: null,
 
   WEATHER_REFRESH: null,
   WEATHER_REFRESH_SUCCESS: null,

@@ -16,7 +16,7 @@
         "https://unsplash.com/",
         "https://hd.unsplash.com/",
         "https://download.unsplash.com/",
-        "https://query.yahooapis.com/"
+        "https://api.open-meteo.com/"
     ],
     "minimum_chrome_version": "88.0.0",
     "background": {

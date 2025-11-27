@@ -22,9 +22,9 @@ var TupiqBody = React.createClass({
 
     return (
       <div className={tupiqBodyClass}>
-        {window.TupiqOptions.optsHideCalendar ? null : <TodoCardContainer />}
-        {window.TupiqOptions.optsHideWeather ? null : <WeatherCardContainer />}
-        {window.TupiqOptions.optsHideTopSites ? null : <TopSitesCardContainer />}
+        {this.props.settings.optsHideCalendar ? null : <TodoCardContainer />}
+        {this.props.settings.optsHideWeather ? null : <WeatherCardContainer />}
+        {this.props.settings.optsHideTopSites ? null : <TopSitesCardContainer />}
       </div>
     )
   }

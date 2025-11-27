@@ -8,17 +8,35 @@ var Analytics = require('../utils/Analytics');
 /**
  * Pure component
  */
+var TupiqStore = require('../stores/TupiqStore');
 var TupiqBody = require('./TupiqBody');
 
-/**
- * TupiqBodyContainer
- */
 var TupiqBodyContainer = React.createClass({
-  render: function() {
+	getInitialState: function () {
+		return {
+			settings: TupiqStore.getSettings()
+		};
+	},
+
+	componentDidMount: function () {
+		TupiqStore.addChangeListener(this._onChange);
+	},
+
+	componentWillUnmount: function () {
+		TupiqStore.removeChangeListener(this._onChange);
+	},
+
+	_onChange: function () {
+		this.setState({
+			settings: TupiqStore.getSettings()
+		});
+	},
+
+	render: function () {
 		return (
-			<TupiqBody />
+			<TupiqBody settings={this.state.settings} />
 		)
-  }
+	}
 });
 
 module.exports = TupiqBodyContainer;

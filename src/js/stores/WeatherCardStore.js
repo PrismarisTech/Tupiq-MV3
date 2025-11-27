@@ -10,40 +10,64 @@ var isRefreshing = false;
 var error = null;
 
 var WeatherCardStore = assign({}, EventEmitter.prototype, {
-	getForecast: function() {
+	getForecast: function () {
 		return Persist.getItem(AppConstants.LOCAL_WEATHER_FORECAST, false);
 	},
 
 	// This will be set to either '' if auto, 'c', or 'f'.
 	// Setting it at this level so we can check if settings have been
 	// changed since and/or a new forecast is required.
-	getUnitUsed: function() {
+	getUnitUsed: function () {
 		return Persist.getItem(AppConstants.LOCAL_WEATHER_FORECAST_UNIT, false) || '';
 	},
 
-	getRefreshing: function() {
+	getRefreshing: function () {
 		return isRefreshing;
 	},
 
-	getError: function() {
+	getError: function () {
 		return error;
 	},
 
-	emitChange: function() {
+	// Debug helper: Call WeatherCardStore.debugWeather() in console
+	debugWeather: function () {
+		var forecast = this.getForecast();
+		if (!forecast || !forecast.forecasts) {
+			return 'No weather data available';
+		}
+
+		var output = '=== Weather Forecast Debug ===\n';
+		output += 'Location: ' + JSON.stringify(forecast.location) + '\n';
+		output += 'Last Updated: ' + new Date(forecast.lastUpdated * 1000).toLocaleString() + '\n';
+		output += '\nForecasts:\n';
+
+		forecast.forecasts.forEach(function (item, index) {
+			var f = item.item.forecast;
+			output += '\n' + (index + 1) + '. ' + f.day + ' (' + f.date + ')\n';
+			output += '   Condition: ' + f.text + '\n';
+			output += '   Icon: ' + f.code + '.png\n';
+			output += '   Temp: ' + f.low + '°-' + f.high + '° ' + item.units.temperature + '\n';
+		});
+
+		output += '\n=== End Debug ===';
+		return output;
+	},
+
+	emitChange: function () {
 		this.emit(CHANGE_EVENT);
 	},
 
-	addChangeListener: function(callback) {
+	addChangeListener: function (callback) {
 		this.on(CHANGE_EVENT, callback);
 	},
 
-	removeChangeListener: function(callback) {
+	removeChangeListener: function (callback) {
 		this.removeListener(CHANGE_EVENT, callback);
 	}
 });
 
-AppDispatcher.register(function(action) {
-	switch(action.actionType) {
+AppDispatcher.register(function (action) {
+	switch (action.actionType) {
 		case AppConstants.WEATHER_REFRESH:
 			isRefreshing = true;
 			error = null;

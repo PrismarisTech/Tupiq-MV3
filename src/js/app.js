@@ -54,7 +54,7 @@ if (TupiqTools.compareVersionNumbers(installedVersion, currentVersion) !== 0) {
 		// Update used backgrounds localStorage item to a simpler array
 		// using just the item IDs
 		var usedBackgrounds = Persist.getItem(AppConstants.LOCAL_USED_BACKGROUNDS);
-		usedBackgrounds = usedBackgrounds.map(function(item) {
+		usedBackgrounds = usedBackgrounds.map(function (item) {
 			return item.id;
 		});
 		usedBackgrounds = _.uniq(usedBackgrounds);
@@ -70,7 +70,7 @@ if (TupiqTools.compareVersionNumbers(installedVersion, currentVersion) !== 0) {
 /**
  * Register shortcuts
  */
-keymaster('⌘+e, ctrl+e', function(event, handler) {
+keymaster('⌘+e, ctrl+e', function (event, handler) {
 	Persist.clear();
 
 	window.location.reload();
@@ -81,6 +81,7 @@ keymaster('⌘+e, ctrl+e', function(event, handler) {
  */
 window.LZString = LZString;
 window.moment = moment;
+window.WeatherCardStore = require('./stores/WeatherCardStore');
 
 /**
  * Start it up
@@ -90,10 +91,10 @@ Persist.getChromeSyncItem({
 	optsHideCalendar: false,
 	optsHideWeather: false,
 	optsHideTopSites: false
-}, function(items) {
+}, function (items) {
 	// Not the best way to do this but eh.
 	// Possibly add this to a App level store?
-  	window.TupiqOptions = items;
+	window.TupiqOptions = items;
 
 	React.render(
 		<App />,
